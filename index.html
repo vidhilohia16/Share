@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aether Travel Weather | Decisions & Packing Assistant</title>
+  <meta name="description" content="Turn raw weather forecasts into clear travel decisions and custom deduplicated packing lists.">
+  
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- HEADER -->
+    <header class="app-header">
+      <div class="logo-group">
+        <div class="logo-icon">
+          <i class="fa-solid fa-compass-drafting"></i>
+        </div>
+        <div>
+          <h1 class="logo-title">Aether Travel</h1>
+          <p class="logo-tagline">Weather Intelligence & Packing Engine</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="persona-badge" id="persona-badge" title="Target persona: Leisure Explorer & Sightseer">
+          <i class="fa-solid fa-person-walking-luggage"></i>
+          <span>Persona: <strong>Outdoor Sightseer</strong></span>
+        </div>
+        <button class="btn btn-outline" id="open-workflow-btn">
+          <i class="fa-solid fa-file-code"></i> Methodology Note
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN SEARCH & TRIP FORM -->
+    <section class="search-card-wrapper">
+      <div class="search-card glass-panel">
+        <form id="trip-search-form" class="trip-form">
+          <div class="form-row">
+            <!-- CITY SEARCH INPUT -->
+            <div class="form-group city-group">
+              <label for="city-input"><i class="fa-solid fa-location-dot"></i> Destination City</label>
+              <div class="input-with-icon">
+                <input 
+                  type="text" 
+                  id="city-input" 
+                  placeholder="e.g. Jaipur, Paris, Springfield..." 
+                  autocomplete="off" 
+                  required
+                >
+                <i class="fa-solid fa-magnifying-glass input-icon"></i>
+              </div>
+              
+              <!-- Auto-suggest Dropdown -->
+              <div class="suggestions-dropdown hidden" id="city-suggestions"></div>
+            </div>
+
+            <!-- DATES PICKER -->
+            <div class="form-group date-group">
+              <label for="start-date"><i class="fa-solid fa-calendar-day"></i> Start Date</label>
+              <input type="date" id="start-date" required>
+            </div>
+
+            <div class="form-group date-group">
+              <label for="end-date"><i class="fa-solid fa-calendar-week"></i> End Date</label>
+              <input type="date" id="end-date" required>
+            </div>
+
+            <div class="form-group submit-group">
+              <label>&nbsp;</label>
+              <button type="submit" class="btn btn-primary btn-block" id="submit-search-btn">
+                <span>Analyze Trip Weather</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- DISAMBIGUATION NOTICE / SELECTION BANNER -->
+        <div class="disambiguation-banner hidden" id="disambiguation-container">
+          <div class="disambiguation-header">
+            <i class="fa-solid fa-map-location-dot"></i>
+            <div>
+              <strong>Multiple locations matching "<span id="search-query-label"></span>"</strong>
+              <p>Please select your exact destination to view correct local forecasts:</p>
+            </div>
+          </div>
+          <div class="disambiguation-grid" id="disambiguation-grid"></div>
+        </div>
+
+        <!-- QUICK PRESET CHIPS -->
+        <div class="presets-row">
+          <span class="preset-label"><i class="fa-solid fa-bolt"></i> Popular Trips:</span>
+          <div class="preset-chips">
+            <button type="button" class="preset-chip" data-city="Jaipur" data-country="India">Jaipur 🇮🇳</button>
+            <button type="button" class="preset-chip" data-city="Paris" data-country="France">Paris 🇫🇷</button>
+            <button type="button" class="preset-chip" data-city="Tokyo" data-country="Japan">Tokyo 🇯🇵</button>
+            <button type="button" class="preset-chip" data-city="New York" data-country="United States">New York 🇺🇸</button>
+            <button type="button" class="preset-chip" data-city="Springfield" data-country="USA">Springfield (Multi-Match) 🇺🇸</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATE 1: EMPTY STATE -->
+    <main id="state-empty" class="state-container">
+      <div class="empty-hero glass-panel">
+        <div class="empty-icon-pulse">
+          <i class="fa-solid fa-cloud-sun-rain"></i>
+        </div>
+        <h2>Turn Forecast Data Into Travel Decisions</h2>
+        <p class="empty-subtitle">
+          Don't get lost in a wall of raw highs, lows, and percentages. Enter any destination city and trip dates (up to 14 days) to instantly unlock plain-language daily verdicts and a deduplicated packing list.
+        </p>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-comment-dots"></i></div>
+            <h3>Verdict First Hierarchy</h3>
+            <p>Every day starts with clear, actionable advice ("Carry a raincoat", "Avoid peak noon sun") before raw numbers.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-suitcase"></i></div>
+            <h3>Trip Packing List</h3>
+            <p>One unified, deduplicated list calculated across your entire itinerary so you pack light and pack right.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-compass"></i></div>
+            <h3>Smart Disambiguation</h3>
+            <p>Searching Springfield or Jaipur? Multi-match location picker ensures 100% weather accuracy.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- STATE 2: LOADING STATE -->
+    <main id="state-loading" class="state-container hidden">
+      <div class="loading-panel glass-panel">
+        <div class="spinner-wrapper">
+          <div class="glow-spinner"></div>
+          <i class="fa-solid fa-plane-flight spinner-icon"></i>
+        </div>
+        <h3 id="loading-status-title">Analyzing Trip Weather...</h3>
+        <p id="loading-status-detail">Fetching Open-Meteo geocoding & daily forecast thresholds...</p>
+
+        <div class="skeleton-grid">
+          <div class="skeleton-card shimmer-box"></div>
+          <div class="skeleton-card shimmer-box"></div>
+          <div class="skeleton-card shimmer-box"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- STATE 3: ERROR STATE -->
+    <main id="state-error" class="state-container hidden">
+      <div class="error-panel glass-panel">
+        <div class="error-icon-box">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h2 id="error-title">Location or Date Error</h2>
+        <p id="error-message" class="error-text">We couldn't fetch weather data for the specified city and date range.</p>
+        
+        <div class="error-actions">
+          <button class="btn btn-secondary" id="error-retry-btn">
+            <i class="fa-solid fa-rotate-right"></i> Try Again
+          </button>
+          <button class="btn btn-primary" id="error-preset-btn">
+            <i class="fa-solid fa-city"></i> Try Paris, France
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- STATE 4: RESULTS STATE -->
+    <main id="state-results" class="state-container hidden">
+      
+      <!-- HERO SUMMARY CARD -->
+      <section class="results-hero glass-panel">
+        <div class="hero-top-row">
+          <div class="location-heading">
+            <span class="badge badge-primary" id="res-country-badge"><i class="fa-solid fa-flag"></i> <span id="res-country">India</span></span>
+            <h2 id="res-city-name">Jaipur</h2>
+            <p class="trip-dates-text" id="res-date-range">Sep 20 - Sep 25, 2026 (6 Days)</p>
+          </div>
+          <div class="hero-weather-summary-tag">
+            <span class="overall-label">OVERALL TRIP VERDICT</span>
+            <h3 class="overall-verdict-title" id="res-overall-verdict">
+              "Mostly warm and sunny with 1 rainy day — ideal for outdoor sightseeing with an umbrella in tow."
+            </h3>
+          </div>
+        </div>
+
+        <!-- TRIP METRICS PILLS -->
+        <div class="trip-highlights-row" id="res-trip-highlights">
+          <div class="highlight-pill"><i class="fa-solid fa-temperature-half"></i> Avg High: <strong id="res-avg-high">34°C</strong></div>
+          <div class="highlight-pill"><i class="fa-solid fa-cloud-rain"></i> Rain Days: <strong id="res-rain-days">1 of 6</strong></div>
+          <div class="highlight-pill"><i class="fa-solid fa-sun"></i> Peak UV: <strong id="res-peak-uv">7.2 (High)</strong></div>
+          <div class="highlight-pill"><i class="fa-solid fa-wind"></i> Max Wind: <strong id="res-max-wind">9.7 km/h</strong></div>
+        </div>
+      </section>
+
+      <!-- TRIP PACKING LIST SECTION -->
+      <section class="packing-section glass-panel">
+        <div class="section-header">
+          <div>
+            <span class="section-subtitle"><i class="fa-solid fa-socks"></i> TRIP ESSENTIALS</span>
+            <h2 class="section-title">One Deduplicated Packing List</h2>
+            <p class="section-desc">Calculated across your full trip itinerary. Check off items as you pack!</p>
+          </div>
+          <button class="btn btn-outline btn-sm" id="copy-packing-btn">
+            <i class="fa-solid fa-copy"></i> Copy Packing List
+          </button>
+        </div>
+
+        <div class="packing-grid" id="packing-list-grid">
+          <!-- Categories: Clothing, Protection/Gear, Essentials -->
+        </div>
+      </section>
+
+      <!-- DAY BY DAY FORECAST SECTION -->
+      <section class="daily-forecast-section">
+        <div class="section-header">
+          <div>
+            <span class="section-subtitle"><i class="fa-solid fa-calendar-days"></i> DAY BY DAY FORECAST</span>
+            <h2 class="section-title">Daily Plain Language Verdicts</h2>
+            <p class="section-desc">Verdict first. Expand metrics for details.</p>
+          </div>
+        </div>
+
+        <div class="daily-cards-grid" id="daily-forecast-grid">
+          <!-- Rendered dynamically by JS -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="app-footer">
+      <p>Aether Travel Weather Engine • Recruitment Task Submission • Powered by Open-Meteo Public APIs</p>
+    </footer>
+
+    <!-- METHODOLOGY & WORKFLOW MODAL -->
+    <div class="modal-backdrop hidden" id="workflow-modal">
+      <div class="modal-content glass-panel">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <i class="fa-solid fa-file-signature modal-icon"></i>
+            <div>
+              <h3>Workflow & Decision Engine Specification</h3>
+              <p class="modal-subtitle">Step 7 Recruitment Note & Architecture Trade-Offs</p>
+            </div>
+          </div>
+          <button class="modal-close-btn" id="close-workflow-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="modal-tabs">
+            <button class="tab-btn active" data-tab="tab-persona">1. Persona & Strategy</button>
+            <button class="tab-btn" data-tab="tab-thresholds">2. Thresholds & Logic</button>
+            <button class="tab-btn" data-tab="tab-leftout">3. Deliberately Omitted</button>
+            <button class="tab-btn" data-tab="tab-next">4. What We'd Build Next</button>
+          </div>
+
+          <div class="tab-content active" id="tab-persona">
+            <h4>Target Persona: The Outdoor Sightseer & Leisure Explorer</h4>
+            <p>We explicitly committed to advising the <strong>leisure traveler</strong> walking through urban landmarks, visiting outdoor markets, and dining al-fresco.</p>
+            <ul>
+              <li><strong>Why this persona?</strong> Raw forecasts state numbers like "34°C max, 7.2 UV". To a sightseer, that means <em>"Hot & intense sun — explore early morning or after 4 PM, wear SPF 50"</em>.</li>
+              <li><strong>Focus metrics:</strong> Apparent (feels-like) temperature, UV Index, precipitation sum/probability, and wind gusts.</li>
+            </ul>
+          </div>
+
+          <div class="tab-content" id="tab-thresholds">
+            <h4>Decision Rules & Threshold Matrix</h4>
+            <div class="threshold-table-wrapper">
+              <table class="threshold-table">
+                <thead>
+                  <tr>
+                    <th>Metric Signal</th>
+                    <th>Threshold Condition</th>
+                    <th>Verdict Output</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Extreme Weather / Storm</strong></td>
+                    <td>WMO Code &ge; 80 or Wind &gt; 45 km/h</td>
+                    <td>"Weather alert: Heavy rain/strong winds expected — stay indoors or keep plans flexible."</td>
+                  </tr>
+                  <tr>
+                    <td><strong>High Rain Risk</strong></td>
+                    <td>Precip Prob &gt; 60% OR Precip Sum &gt; 5.0 mm</td>
+                    <td>"Rain likely — carry an umbrella/raincoat and plan indoor activities for peak hours."</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Intense Heat & UV</strong></td>
+                    <td>Max Temp &gt; 32°C OR UV Index &gt; 8.0</td>
+                    <td>"Hot & intense sun — explore early morning or after 4 PM, wear SPF 50."</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Chilly & Wind</strong></td>
+                    <td>Min Temp &lt; 12°C OR Wind &gt; 25 km/h</td>
+                    <td>"Chilly & breezy — layer up with a windbreaker if walking outdoors."</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Unremarkable Day</strong></td>
+                    <td>Mild (18-28°C), Rain &lt; 20%, UV &lt; 6, Wind &lt; 20km/h</td>
+                    <td>"Pleasant & comfortable — great day for strolling, sightseeing, and outdoor dining."</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h5 class="mt-4">Multi-Condition Prioritization Rule</h5>
+            <p>When multiple signals trigger simultaneously (e.g. 35°C AND 70% Rain), the decision engine prioritizes <strong>Safety/Rain > Extreme Heat > Cold/Wind > Mild</strong> to ensure the primary plain-language sentence is actionable and unambiguous.</p>
+          </div>
+
+          <div class="tab-content" id="tab-leftout">
+            <h4>One Thing Deliberately Left Out: Hourly Interactive Charts</h4>
+            <p>We deliberately omitted detailed 24-hour line graphs and hourly slider controls.</p>
+            <p><strong>Rationale:</strong> Travel planning is ruined by cognitive overload. If a user has to read through hourly temperature curves to decide whether to bring an umbrella, our product failed its core promise. We condensed hourly metrics directly into actionable plain language time blocks (e.g. <em>"explore before 11 AM or after 4 PM"</em>).</p>
+          </div>
+
+          <div class="tab-content" id="tab-next">
+            <h4>What We Would Build Next (v2 Roadmap)</h4>
+            <ol class="roadmap-list">
+              <li><strong>Interactive Activity Feasibility Scores:</strong> Ratings for specific activities like <em>"Outdoor Photography (9/10)"</em>, <em>"Hiking/Trekking (4/10 due to afternoon heat)"</em>, or <em>"Rooftop Dining (8/10)"</em>.</li>
+              <li><strong>Itinerary Rain Radar Alerts:</strong> PWA push notifications that alert travelers 30 minutes before sudden local rain showers hit their current GPS location.</li>
+              <li><strong>Trip Luggage Weight Budget Calculator:</strong> Estimates total bag weight based on clothing item recommendations (e.g. 3 jackets vs 5 t-shirts).</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
