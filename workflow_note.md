@@ -1,4 +1,4 @@
-# Travel Weather Decision Engine & Packing Assistant
+# Travel Buddy | Weather Decision Engine & Packing Assistant
 ## Tech Vertical Recruitment Task Submission Note (Step 7)
 
 ---
@@ -60,6 +60,6 @@ We deliberately omitted hourly graphs to preserve cognitive clarity. Instead, we
 ---
 
 ### 6. Technical Stack & Live Deployment
-- **Stack:** Plain HTML5, CSS3 (Glassmorphism design tokens, CSS Grid/Flexbox), Vanilla ES6 JavaScript. Zero build step, instant performance.
+- **Stack:** Plain HTML5, CSS3 (Green & White Glassmorphism design tokens, CSS Grid/Flexbox), Vanilla ES6 JavaScript. Zero build step, instant performance.
 - **APIs:** 100% live Open-Meteo Geocoding & Forecast APIs runtime calls with zero pre-saved or hardcoded mock data.
 - **Handling Out-of-Bound Inputs:** Client-side date validation prevents selecting dates past Open-Meteo's 15-day limit or trip ranges longer than 14 days, with clear fallback error state cards.

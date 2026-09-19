@@ -1,5 +1,5 @@
 /**
- * AETHER TRAVEL WEATHER - DECISION ENGINE & PACKING ASSISTANT
+ * TRAVEL BUDDY WEATHER - DECISION ENGINE & PACKING ASSISTANT
  * Core JavaScript Application
  */
 
@@ -299,11 +299,9 @@ async function handleCitySearch(query) {
 
     // Disambiguation check: If multiple places exist with exact or similar names (e.g., Springfield)
     if (matches.length > 1) {
-      // Check if user needs to disambiguate
       renderDisambiguationBanner(query, matches);
-      switchState('empty'); // keep in form state with disambiguation notice
+      switchState('empty');
     } else {
-      // Single match -> proceed directly
       selectLocationAndFetchForecast(matches[0]);
     }
   } catch (err) {
@@ -368,8 +366,6 @@ async function selectLocationAndFetchForecast(location) {
     }
 
     appState.tripForecast = data.daily;
-    
-    // STEP 3 & 4: PROCESS DECISION ENGINE & RENDER RESULTS
     processAndRenderResults(location, data.daily);
   } catch (err) {
     showError("Forecast Fetch Failed", "Failed to retrieve live weather data from Open-Meteo API. Please try again.");
@@ -408,26 +404,20 @@ function processAndRenderResults(location, daily) {
       wmoCode: daily.weather_code[i]
     };
 
-    // Calculate aggregated trip stats
     totalHigh += item.maxTemp;
     if (item.precipProb > 40 || item.precipSum > 2.0) rainDaysCount++;
     if (item.uvMax > maxUvOverall) maxUvOverall = item.uvMax;
     if (item.windMax > maxWindOverall) maxWindOverall = item.windMax;
 
-    // Compute Daily Verdict (Plain Language)
     item.verdict = computeDailyVerdict(item);
     dailyProcessed.push(item);
   }
 
   const avgHigh = (totalHigh / count).toFixed(1);
 
-  // Generate Trip Overall Verdict Summary
   const overallVerdict = computeOverallTripVerdict(count, rainDaysCount, avgHigh, maxUvOverall, maxWindOverall);
-
-  // Generate Deduplicated Packing List
   const packingList = computeDeduplicatedPackingList(dailyProcessed);
 
-  // RENDER TO DOM
   renderResultsHero(location, appState.startDate, appState.endDate, count, overallVerdict, avgHigh, rainDaysCount, maxUvOverall, maxWindOverall);
   renderPackingList(packingList);
   renderDailyCards(dailyProcessed);
@@ -435,11 +425,11 @@ function processAndRenderResults(location, daily) {
   switchState('results');
 }
 
-// COMPUTE DAILY PLAIN-LANGUAGE VERDICT (STEP 3 LOGIC)
+// COMPUTE DAILY PLAIN-LANGUAGE VERDICT
 function computeDailyVerdict(day) {
   const { maxTemp, minTemp, precipProb, precipSum, uvMax, windMax, wmoCode } = day;
 
-  // Rule 1: Severe Storm / Downpour (Priority 1)
+  // Rule 1: Severe Storm / Downpour
   if (wmoCode >= 80 || windMax > 42) {
     return {
       text: "Weather alert: Heavy rain or strong winds expected — stay indoors or keep plans flexible.",
@@ -475,7 +465,7 @@ function computeDailyVerdict(day) {
     };
   }
 
-  // Rule 5: Unremarkable Pleasant Day (Default sweet spot for Outdoor Sightseer)
+  // Rule 5: Unremarkable Pleasant Day
   if (maxTemp >= 18 && maxTemp <= 28 && precipProb < 25 && uvMax < 6.5) {
     return {
       text: "Pleasant & comfortable — great weather for strolling, sightseeing, and outdoor terrace dining.",
@@ -492,7 +482,7 @@ function computeDailyVerdict(day) {
   };
 }
 
-// COMPUTE OVERALL TRIP VERDICT SUMMARY (STEP 3)
+// COMPUTE OVERALL TRIP VERDICT SUMMARY
 function computeOverallTripVerdict(totalDays, rainDays, avgHigh, maxUv, maxWind) {
   if (rainDays === 0 && avgHigh >= 20 && avgHigh <= 29) {
     return `"Picture-perfect trip! ${totalDays} days of pleasant, sunny weather — ideal for outdoor sightseeing and walking everywhere."`;
@@ -514,7 +504,7 @@ function computeOverallTripVerdict(totalDays, rainDays, avgHigh, maxUv, maxWind)
   return `"Good weather overall for your ${totalDays}-day trip — standard seasonal clothing and walking gear recommended."`;
 }
 
-// COMPUTE DEDUPLICATED PACKING LIST (STEP 3)
+// COMPUTE DEDUPLICATED PACKING LIST
 function computeDeduplicatedPackingList(dailyList) {
   const itemsSet = new Set();
   const categories = {
@@ -537,12 +527,10 @@ function computeDeduplicatedPackingList(dailyList) {
     if (d.uvMax > 5.5) hasHighUv = true;
   });
 
-  // Always Included Essentials (Sightseer Baseline)
   addPackingItem(categories.essentials, itemsSet, "Comfortable Walking Shoes", "Always Needed");
   addPackingItem(categories.essentials, itemsSet, "Reusable Water Bottle", "Hydration");
   addPackingItem(categories.essentials, itemsSet, "Universal Power Adapter", "Tech");
 
-  // Conditional Gear & Protection
   if (hasRain) {
     addPackingItem(categories.gear, itemsSet, "Compact Travel Umbrella", "Rain Forecasted");
     addPackingItem(categories.gear, itemsSet, "Lightweight Waterproof Jacket", "Rain Shell");
@@ -626,7 +614,7 @@ function renderPackingList(categories) {
   });
 }
 
-// RENDER DAILY FORECAST CARDS (VERDICT FIRST HIERARCHY)
+// RENDER DAILY FORECAST CARDS
 function renderDailyCards(dailyList) {
   DOM.dailyCardsGrid.innerHTML = '';
 
@@ -654,13 +642,11 @@ function renderDailyCards(dailyList) {
         <div class="weather-icon-large">${weatherInfo.icon}</div>
       </div>
 
-      <!-- VERDICT FIRST HIERARCHY -->
       <div class="verdict-box">
         <span class="verdict-tag">DAILY VERDICT</span>
         <div class="verdict-text">${day.verdict.text}</div>
       </div>
 
-      <!-- SUBTLE SECONDARY METRICS -->
       <div class="metrics-row">
         <div class="metric-item">
           <span>High / Low</span>
@@ -694,7 +680,7 @@ function copyPackingListToClipboard() {
   const checkboxes = DOM.packingGrid.querySelectorAll('.item-name');
   if (checkboxes.length === 0) return;
 
-  let text = `🎒 AETHER TRAVEL PACKING LIST for ${appState.selectedCity ? appState.selectedCity.name : 'Trip'}\n`;
+  let text = `🎒 TRAVEL BUDDY PACKING LIST for ${appState.selectedCity ? appState.selectedCity.name : 'Trip'}\n`;
   text += `Dates: ${appState.startDate} to ${appState.endDate}\n\n`;
 
   checkboxes.forEach((item, index) => {

@@ -1,9 +1,9 @@
-# Aether Travel Weather | Decision Engine & Smart Packing Assistant
+# Travel Buddy | Weather Decision Engine & Smart Packing Assistant
 
 > **Tech Vertical Recruitment Task Submission**  
 > Turning raw forecast numbers into clear travel decisions and deduplicated packing lists.
 
-![Aether Travel Weather](https://img.shields.io/badge/Open--Meteo-Live%20API-6366f1?style=for-the-badge&logo=cloud)
+![Travel Buddy](https://img.shields.io/badge/Open--Meteo-Live%20API-10b981?style=for-the-badge&logo=cloud)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
@@ -16,7 +16,7 @@ Raw forecast data is everywhere and free, but most weather apps fail because the
 1. **Is this going to be a decent trip weather-wise?**
 2. **What should I pack?**
 
-**Aether Travel** bridges this gap. Built for *The Outdoor Sightseer & Leisure Explorer*, it evaluates daily forecast metrics using a prioritized decision engine and outputs plain-language advice before raw numbers, alongside a unified, deduplicated trip packing list.
+**Travel Buddy** bridges this gap. Built for *The Outdoor Sightseer & Leisure Explorer*, it evaluates daily forecast metrics using a prioritized decision engine and outputs plain-language advice before raw numbers, alongside a unified, deduplicated trip packing list.
 
 ---
 
@@ -63,7 +63,7 @@ Raw forecast data is everywhere and free, but most weather apps fail because the
 
 ```
 ├── index.html        # Single-page HTML markup with 4 UI state containers & modal
-├── styles.css        # Vanilla CSS design system (Glassmorphism, Dark Mode, Micro-animations)
+├── styles.css        # Emerald Green & White CSS design system (Glassmorphism, Micro-animations)
 ├── app.js            # Live Geocoding, Forecast API, Decision Engine & State Manager
 ├── workflow_note.md  # Detailed Step 7 recruitment submission write-up
 └── README.md         # Documentation & GitHub Overview
